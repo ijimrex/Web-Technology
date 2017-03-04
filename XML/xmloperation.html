@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homework 4</title>
+    <script>
+        function trim(str){
+            return str.replace(/^(\s|\u00A0)+/,'').replace(/(\s|\u00A0)+$/,'');
+        }
+
+        function pressKey(event) {
+            if(event.keyCode==13)
+            {
+                whenClick();
+                event.preventDefault();
+            }
+
+        }
+
+        function whenClick() {
+            var x=document.getElementById("URL").value;
+            var flag1=checkit(x);
+            if (flag1==false)
+                return 0;
+            getxml(x);
+
+        }
+        function fileExist(Furl)
+        {
+            var req = new XMLHttpRequest();
+            req.open('HEAD', Furl, false);
+            req.send();
+            if (req.status == "404") {
+                alert("Error:File doesn't exist");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function checkit(x) {
+
+            if (x=="") {
+                alert("Error:No Input");
+                return false
+            }
+            var fx=fileExist(x);
+            if (fx==false)
+                return false;
+            var nse=noSynError(x);
+            if (nse==false)
+                return false;
+//            alert("Error:Error in XML file");
+
+        }
+
+        function noSynError(txt) {
+                // code for Mozilla, Firefox, Opera, etc.
+                if (window.XMLHttpRequest)
+                {
+                    var xmlhttp = new XMLHttpRequest();
+                    xmlhttp.open("GET",txt,false);
+//                    xmlhttp.overrideMimeType("text/html;charset=gb2312");
+                    xmlhttp.send();
+                    var parser=new DOMParser();
+                    var xmlDoc=parser.parseFromString(xmlhttp.responseText,"text/xml");
+                    if (xmlDoc.getElementsByTagName("parsererror").length>0)
+                    {
+                        alert("Error: Invalid XML");
+                        return false
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+
+
+        }
+
+
+        function getxml(x) {
+            if (window.XMLHttpRequest)
+            {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp=new XMLHttpRequest();
+            }
+            else
+            {// code for IE6, IE5
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.open("GET",x,false);
+            xmlhttp.send();
+            xmlDoc=xmlhttp.responseXML;
+//            alert(xmlDoc);
+            var header=xmlDoc.getElementsByTagName("Data");
+            var y=xmlDoc.getElementsByTagName("Row");
+            var air=xmlDoc.getElementsByTagName("Airline")
+            if (y.length==0||air.length==0){
+                alert("Error: NO Airline Company");
+                return false;
+            }
+            var win=window.open("", '_blank', "height=600,width=800,scrollable=yes");
+            var newdoc=win.document;
+            newdoc.write("<table border='1'>");
+            newdoc.write("<tr style='text-align: center'><td>");
+            if (header[0].childNodes[0]==null)
+                newdoc.write("</td><td>");
+            else {
+            newdoc.write(trim(header[0].childNodes[0].nodeValue));
+            newdoc.write("</td><td>");}
+            if (header[1].childNodes[0]==null)
+                newdoc.write("</td><td>");
+            else {
+                newdoc.write(trim(header[1].childNodes[0].nodeValue));
+                newdoc.write("</td><td>");}
+            if (header[2].childNodes[0]==null)
+                newdoc.write("</td><td>");
+            else {
+                newdoc.write(trim(header[2].childNodes[0].nodeValue));
+                newdoc.write("</td><td>");}
+            if (header[3].childNodes[0]==null)
+                newdoc.write("</td><td>");
+            else {
+                newdoc.write(trim(header[3].childNodes[0].nodeValue));
+                newdoc.write("</td><td>");}
+            if (header[4].childNodes[0]==null)
+                newdoc.write("</td><td>");
+            else {
+                newdoc.write(trim(header[4].childNodes[0].nodeValue));
+                newdoc.write("</td><td>");}
+            if (header[5].childNodes[0]==null)
+                newdoc.write("</td></tr>");
+            else {
+                newdoc.write(trim(header[5].childNodes[0].nodeValue));
+                newdoc.write("</td></tr>");}
+            for (i=0;i<y.length;i++)
+            {
+                if(y[i].childNodes.length==1)
+                    continue;
+                newdoc.write("<tr><td>");
+
+                if(y[i].getElementsByTagName("Airline")[0].childNodes[0]==null){
+                    newdoc.write("</td><td>");}
+                else{
+                    newdoc.write(trim(y[i].getElementsByTagName("Airline")[0].childNodes[0].nodeValue));
+                    newdoc.write("</td><td>");
+                }
+
+                if (y[i].getElementsByTagName("IATA")[0].childNodes[0]==null)
+                    newdoc.write("</td><td  width='180'>");
+                else{
+                newdoc.write(trim(y[i].getElementsByTagName("IATA")[0].childNodes[0].nodeValue));
+                newdoc.write("</td><td width='180'>");}
+                h=y[i].getElementsByTagName("Hub");
+//                alert(y[i].getElementsByTagName("Hubs")[0].childNodes.length);
+                var fh=0;
+                for(z=0;z<h.length;z++){
+//                    if (y[i].getElementsByTagName("Hub")[z].childNodes[0]!=null){
+//                    alert(y[i].getElementsByTagName("Hub")[z].childNodes[0].nodeValue);
+                    if (y[i].getElementsByTagName("Hub")[z].childNodes[0]!=null) {
+                        if (fh == 0 && z==0) {
+                            newdoc.write("<li><b>");
+                            newdoc.write(trim(y[i].getElementsByTagName("Hub")[z].childNodes[0].nodeValue));
+                            newdoc.write("</b></li>");
+                            fh=1;
+                        }
+                        else {
+                            newdoc.write("<li>");
+                            newdoc.write(trim(y[i].getElementsByTagName("Hub")[z].childNodes[0].nodeValue));
+                            newdoc.write("</li>");
+
+                        }
+                    }
+                    else
+                        newdoc.write("<li></li>");
+//                }
+                }
+
+//                newdoc.write(y[i].getElementsByTagName("IATA")[0].childNodes[0].nodeValue);
+
+                newdoc.write("</td><td>");
+                if (y[i].getElementsByTagName("Notes")[0].childNodes[0]==null)
+                    newdoc.write("</td><td>");
+                else{
+                    newdoc.write(trim(y[i].getElementsByTagName("Notes")[0].childNodes[0].nodeValue));
+                    newdoc.write("</td><td>");}
+                var url=trim(y[i].getElementsByTagName("HomePage")[0].childNodes[0].nodeValue);
+                newdoc.write("<a href="+url+">");
+                newdoc.write(url+"</a>");
+
+                var t=String(i);
+                newdoc.write("</td><td id='d'>");
+                if (y[i].getElementsByTagName("Plane")[0].childNodes[0]==null)
+                    newdoc.write("</td><td>");
+                else {
+                m=trim(y[i].getElementsByTagName("Plane")[0].childNodes[0].nodeValue);
+//                alert(m);
+
+                newdoc.write('<img src='+m+' height="150" width="200">');
+
+                newdoc.write("</td></tr>");}
+            };
+            newdoc.write("</table>")
+        }
+    </script>
+</head>
+
+<body style="text-align:center">
+<div id="main" style="margin-right: auto; margin-left: auto;margin-top: 200px; margin-bottom: 0;height: 600px">
+    <div id="up" style="margin-right: auto; margin-left: auto; margin-bottom: 0;height: 50px;">
+        <h2 style="text-align:  center">Enter URL for Airlines List XML File</h2>
+    </div>
+    <div style="margin-right: auto; margin-left: auto; width: 300px">
+    <form >
+        <input type="text" name="URL" id="URL" onkeypress="pressKey(event)" >
+        <br><br>
+        <button type="button" onclick="whenClick()"> Submit Query</button>
+    </form>
+    </div>
+
+
+</div>
+<noscript></noscript>
+</body>
+</html>
