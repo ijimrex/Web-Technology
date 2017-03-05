@@ -15,7 +15,6 @@
     <IATA>AS</IATA>
     <Hubs>
         <Hub>Seattle/Tacoma</Hub>
-        <Hub>Anchorage</Hub>
         <Hub>Portland (OR)</Hub>
         <Hub>San Diego</Hub>
         <Hub>San Jose</Hub>
