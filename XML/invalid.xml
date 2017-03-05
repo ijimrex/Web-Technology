@@ -15,9 +15,9 @@
     <IATA>AS</IATA>
     <Hubs>
         <Hub>Seattle/Tacoma</Hub>
+        <Hub>Anchorage</Hub>
         <Hub>Portland (OR)</Hub>
         <Hub>San Diego</Hub>
-        <Hub>San Jose</Hub>
     </Hubs>
     <Notes>Founded as McGee Airways, and commenced operations in 1944 as Alaska Airlines. Plans have been made for Alaska Airlines to acquire Virgin America.</Notes>
     <HomePage>https://www.alaskaair.com/</HomePage>
